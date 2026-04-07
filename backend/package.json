@@ -1,5 +1,5 @@
 {
-  "name": "mega-checker",
+  "name": "mega",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
