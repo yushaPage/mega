@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Reachability Checker</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: #1e293b;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        margin-bottom: 15px;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #3b82f6;
+        color: white;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #2563eb;
+    }
+
+    .result {
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    .success { color: #22c55e; }
+    .error { color: #ef4444; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🔗 URL Checker</h1>
+
+    <input type="text" id="urlInput" placeholder="Enter MEGA or any URL">
+    <button onclick="checkURL()">Check</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+async function checkURL() {
+    const url = document.getElementById("urlInput").value.trim();
+    const resultBox = document.getElementById("result");
+
+    resultBox.innerHTML = "Checking...";
+    resultBox.className = "result";
+
+    // Step 1: Syntax check
+    try {
+        new URL(url);
+    } catch {
+        resultBox.innerHTML = "❌ Invalid URL format";
+        resultBox.classList.add("error");
+        return;
+    }
+
+    // Step 2: Reachability check
+    try {
+        const response = await fetch(url, {
+            method: "HEAD",
+            mode: "no-cors"
+        });
+
+        // NOTE: no-cors hides status, but if no error → reachable
+        resultBox.innerHTML = "✅ URL is reachable (No-CORS check)";
+        resultBox.classList.add("success");
+
+    } catch (error) {
+        resultBox.innerHTML = "❌ URL is NOT reachable";
+        resultBox.classList.add("error");
+    }
+}
+</script>
+
+</body>
+</html>
