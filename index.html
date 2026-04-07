@@ -65,9 +65,8 @@
         position: relative;
         background: rgba(255,255,255,0.05);
         border-radius: 15px;
-        padding: 15px;
+        padding: 20px 15px 15px 15px;
         word-break: break-all;
-        cursor: pointer;
         transition: 0.3s;
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255,255,255,0.1);
@@ -80,13 +79,24 @@
 
     .index {
         position: absolute;
-        top: 10px;
-        right: 15px;
+        top: 8px;
+        right: 10px;
         background: #6c63ff;
-        padding: 4px 10px;
+        padding: 3px 8px;
         border-radius: 10px;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: bold;
+    }
+
+    .box a {
+        color: #aab0ff;
+        text-decoration: none;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .box a:hover {
+        text-decoration: underline;
     }
 
     .empty {
@@ -114,16 +124,23 @@ function extractURLs() {
     const emptyMsg = document.getElementById("emptyMsg");
 
     resultsDiv.innerHTML = "";
+    emptyMsg.style.display = "none";
 
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const urls = text.match(urlRegex);
+    const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+    let urls = text.match(urlRegex);
 
     if (!urls) {
         emptyMsg.style.display = "block";
         return;
     }
 
-    emptyMsg.style.display = "none";
+    // Normalize URLs (add https to www links)
+    urls = urls.map(url => {
+        if (!url.startsWith("http")) {
+            return "https://" + url;
+        }
+        return url;
+    });
 
     const uniqueUrls = [...new Set(urls)];
 
@@ -135,33 +152,14 @@ function extractURLs() {
         indexTag.className = "index";
         indexTag.innerText = index + 1;
 
-        const textNode = document.createElement("div");
-        textNode.innerText = url;
+        const link = document.createElement("a");
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.innerText = url;
 
         box.appendChild(indexTag);
-        box.appendChild(textNode);
-
-        box.onclick = () => {
-            window.open(url, "_blank");
-        };
-
-        resultsDiv.appendChild(box);
-    });
-}
-</script>
-
-</body>
-</html>
-    const uniqueUrls = [...new Set(urls)];
-
-    uniqueUrls.forEach(url => {
-        const box = document.createElement("div");
-        box.className = "box";
-        box.innerText = url;
-
-        box.onclick = () => {
-            window.open(url, "_blank");
-        };
+        box.appendChild(link);
 
         resultsDiv.appendChild(box);
     });
