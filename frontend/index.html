@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mega Folder Checker</title>
+</head>
+<body>
+  <h2>Check Mega Folder URL</h2>
+  <input type="text" id="megaUrl" placeholder="Enter Mega folder URL" style="width:400px;">
+  <button onclick="checkMega()">Check</button>
+  <p id="result"></p>
+
+  <script>
+    async function checkMega() {
+      const url = document.getElementById("megaUrl").value;
+      const result = document.getElementById("result");
+
+      try {
+        // Call backend API hosted on Railway
+        const response = await fetch("https://YOUR-RAILWAY-APP.up.railway.app/check?url=" + encodeURIComponent(url));
+        const data = await response.json();
+
+        if (data.status === "available") {
+          result.textContent = "✅ Folder is available!";
+        } else if (data.status === "invalid") {
+          result.textContent = "❌ Folder is invalid or deleted.";
+        } else {
+          result.textContent = "⚠️ Error: " + data.message;
+        }
+      } catch (error) {
+        result.textContent = "❌ Could not reach backend.";
+      }
+    }
+  </script>
+</body>
+</html>
